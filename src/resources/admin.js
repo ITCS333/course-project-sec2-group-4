@@ -70,7 +70,6 @@ async function loadAndInitialize() {
   if (resourceForm) resourceForm.addEventListener('submit', handleAddResource);
   if (resourcesTbody) resourcesTbody.addEventListener('click', handleTableClick);
 }
-
 /**
  * TODO: Implement the handleAddResource function.
  * This is the event handler for the form's 'submit' event.
