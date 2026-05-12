@@ -1,132 +1,228 @@
 /*
-  Requirement: Populate the resource detail page and discussion forum.
+  Requirement: Make the "Manage Resources" page interactive.
 
   Instructions:
-  1. Link this file to `details.html` using:
-     <script src="details.js" defer></script>
-
-  2. In `details.html`, add the following IDs:
-     - To the <h1>:                           id="resource-title"
-     - To the description <p>:                id="resource-description"
-     - To the "Access Resource Material" <a>: id="resource-link"
-     - To the <div> for comments:             id="comment-list"
-     - To the comment <form>:                 id="comment-form"
-     - To the <textarea>:                     id="new-comment"
-
+  1. Link this file to `admin.html` using:
+     <script src="admin.js" defer></script>
+  
+  2. In `admin.html`, add id="resources-tbody" to the <tbody> element
+     inside your resources-table. This id is required by this script.
+  
   3. Implement the TODOs below.
 */
 
 // --- Global Data Store ---
-// These will hold the data related to this specific resource.
-let currentResourceId = null;
-let currentComments = [];
+// This will hold the resources loaded from the API.
+let resources = [];
 
 // --- Element Selections ---
-// TODO: Select all the elements you added IDs for in step 2.
+// TODO: Select the resource form ('#resource-form').
+const resourceForm = document.querySelector('#resource-form');
+
+// TODO: Select the resources table body ('#resources-tbody').
+const resourcesTbody = document.querySelector('#resources-tbody');
 
 // --- Functions ---
 
 /**
- * TODO: Implement the getResourceIdFromURL function.
- * It should:
- * 1. Get the query string from `window.location.search`.
- * 2. Use the `URLSearchParams` object to get the value of the 'id' parameter.
- * 3. Return the id value (as a string).
- */
-function getResourceIdFromURL() {
-  // ... your implementation here ...
-}
-
-/**
- * TODO: Implement the renderResourceDetails function.
+ * TODO: Implement the createResourceRow function.
  * It takes one resource object { id, title, description, link }.
+ * It should return a <tr> element with the following <td>s:
+ * 1. A <td> for the title.
+ * 2. A <td> for the description.
+ * 3. A <td> for the link.
+ * 4. A <td> containing two buttons:
+ *    - An "Edit" button with class="edit-btn" and data-id="${id}".
+ *    - A "Delete" button with class="delete-btn" and data-id="${id}".
+ */
+function createResourceRow(resource) {
+  const { id, title, description, link } = resource;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${title}</td>
+    <td>${description}</td>
+    <td>${link}</td>
+    <td>
+      <button class="edit-btn" data-id="${id}">Edit</button>
+      <button class="delete-btn" data-id="${id}">Delete</button>
+    </td>
+  `;
+  return tr;
+}
+
+/**
+ * TODO: Implement the renderTable function.
  * It should:
- * 1. Set the `textContent` of the title element (id="resource-title")
- *    to the resource's title.
- * 2. Set the `textContent` of the description element (id="resource-description")
- *    to the resource's description.
- * 3. Set the `href` attribute of the link element (id="resource-link")
- *    to the resource's link.
+ * 1. Clear the resources table body ('#resources-tbody').
+ * 2. Loop through the global `resources` array.
+ * 3. For each resource, call `createResourceRow()` and
+ *    append the returned <tr> to the table body.
  */
-function renderResourceDetails(resource) {
-  // ... your implementation here ...
+function renderTable() {
+  resourcesTbody.innerHTML = '';
+  resources.forEach(resource => {
+    resourcesTbody.appendChild(createResourceRow(resource));
+  });
 }
 
 /**
- * TODO: Implement the createCommentArticle function.
- * It takes one comment object { id, resource_id, author, text, created_at }.
- * It should return an <article> element matching the structure in `details.html`:
- * - A <p> containing the comment's text.
- * - A <footer> containing the comment's author
- *   (e.g., "Posted by: Ali Hassan").
- */
-function createCommentArticle(comment) {
-  // ... your implementation here ...
-}
-
-/**
- * TODO: Implement the renderComments function.
- * It should:
- * 1. Clear the comment list container (id="comment-list").
- * 2. Loop through the global `currentComments` array.
- * 3. For each comment, call `createCommentArticle()` and
- *    append the returned <article> to the comment list container.
- */
-function renderComments() {
-  // ... your implementation here ...
-}
-
-/**
- * TODO: Implement the handleAddComment function.
- * This is the event handler for the comment form's 'submit' event.
+ * TODO: Implement the handleAddResource function.
+ * This is the event handler for the form's 'submit' event.
  * It should:
  * 1. Prevent the form's default submission.
- * 2. Get the text from the textarea (id="new-comment").
- * 3. If the text is empty, return early.
- * 4. Use `fetch()` to POST the new comment to the API:
- *    - URL: './api/index.php?action=comment'
+ * 2. Get the values from the title (id="resource-title"),
+ *    description (id="resource-description"), and
+ *    link (id="resource-link") inputs.
+ * 3. Use `fetch()` to POST the new resource to the API:
+ *    - URL: './api/index.php'
  *    - Method: POST
  *    - Headers: { 'Content-Type': 'application/json' }
- *    - Body: JSON.stringify({
- *        resource_id: currentResourceId,
- *        author: 'Student',
- *        text: commentText
- *      })
- *      ('Student' is an acceptable hardcoded author for this exercise.)
- * 5. On success, add the new comment object returned by the API to the
- *    global `currentComments` array.
- * 6. Call `renderComments()` to refresh the comment list.
- * 7. Clear the textarea.
+ *    - Body: JSON.stringify({ title, description, link })
+ * 4. The API returns { success: true, id: <new id> }.
+ *    Add the new resource object (including the id returned by the API)
+ *    to the global `resources` array.
+ * 5. Call `renderTable()` to refresh the list.
+ * 6. Reset the form.
  */
-function handleAddComment(event) {
-  // ... your implementation here ...
+async function handleAddResource(event) {
+  event.preventDefault();
+
+  const title       = document.querySelector('#resource-title').value;
+  const description = document.querySelector('#resource-description').value;
+  const link        = document.querySelector('#resource-link').value;
+
+  const response = await fetch('./api/index.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, description, link })
+  });
+
+  const result = await response.json();
+
+  if (result.success) {
+    resources.push({ id: result.id, title, description, link });
+    renderTable();
+    resourceForm.reset();
+  }
 }
 
 /**
- * TODO: Implement the initializePage function.
+ * TODO: Implement the handleTableClick function.
+ * This handles click events on the table body using event delegation.
+ * It should:
+ *
+ * If the clicked element has class "delete-btn":
+ * 1. Get the resource id from the button's data-id attribute.
+ * 2. Use `fetch()` to DELETE the resource via the API:
+ *    - URL: `./api/index.php?id=${id}`
+ *    - Method: DELETE
+ * 3. On success, remove the resource from the global `resources` array
+ *    by filtering out the entry with the matching id.
+ * 4. Call `renderTable()` to refresh the list.
+ *
+ * If the clicked element has class "edit-btn":
+ * 1. Get the resource id from the button's data-id attribute.
+ * 2. Find the matching resource in the global `resources` array.
+ * 3. Populate the form fields (id="resource-title", id="resource-description",
+ *    id="resource-link") with the resource's current values so the admin
+ *    can edit them.
+ * 4. Change the submit button (id="add-resource") text to "Update Resource"
+ *    to indicate edit mode.
+ * 5. On form submit, use `fetch()` to PUT the updated resource to the API:
+ *    - URL: './api/index.php'
+ *    - Method: PUT
+ *    - Headers: { 'Content-Type': 'application/json' }
+ *    - Body: JSON.stringify({ id, title, description, link })
+ * 6. On success, update the matching resource in the global `resources` array.
+ * 7. Call `renderTable()` and reset the form back to "Add" mode,
+ *    restoring the submit button text to "Add Resource".
+ */
+function handleTableClick(event) {
+  const target = event.target;
+
+  if (target.classList.contains('delete-btn')) {
+    const id = target.dataset.id;
+
+    fetch(`./api/index.php?id=${id}`, { method: 'DELETE' })
+      .then(res => res.json())
+      .then(result => {
+        if (result.success) {
+          resources = resources.filter(r => r.id != id);
+          renderTable();
+        }
+      });
+  }
+
+  if (target.classList.contains('edit-btn')) {
+    const id = target.dataset.id;
+    const resource = resources.find(r => r.id == id);
+
+    document.querySelector('#resource-title').value       = resource.title;
+    document.querySelector('#resource-description').value = resource.description;
+    document.querySelector('#resource-link').value        = resource.link;
+
+    const submitBtn = document.querySelector('#add-resource');
+    submitBtn.textContent = 'Update Resource';
+
+    // Remove old submit listener and add update listener
+    const updateHandler = async (event) => {
+      event.preventDefault();
+
+      const title       = document.querySelector('#resource-title').value;
+      const description = document.querySelector('#resource-description').value;
+      const link        = document.querySelector('#resource-link').value;
+
+      const response = await fetch('./api/index.php', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, title, description, link })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        const index = resources.findIndex(r => r.id == id);
+        resources[index] = { id, title, description, link };
+        renderTable();
+        resourceForm.reset();
+        submitBtn.textContent = 'Add Resource';
+        resourceForm.removeEventListener('submit', updateHandler);
+        resourceForm.addEventListener('submit', handleAddResource);
+      }
+    };
+
+    resourceForm.removeEventListener('submit', handleAddResource);
+    resourceForm.addEventListener('submit', updateHandler);
+  }
+}
+
+/**
+ * TODO: Implement the loadAndInitialize function.
  * This function must be 'async'.
  * It should:
- * 1. Call `getResourceIdFromURL()` and store the result in `currentResourceId`.
- * 2. If no id is found, set the title element's textContent to
- *    "Resource not found." and stop.
- * 3. Fetch the resource details and its comments at the same time
- *    using Promise.all():
- *    - Resource URL:  `./api/index.php?id=${currentResourceId}`
- *      Response:      { success: true, data: { id, title, description, link, created_at } }
- *    - Comments URL:  `./api/index.php?resource_id=${currentResourceId}&action=comments`
- *      Response:      { success: true, data: [ ...comment objects ] }
- * 4. Store the comments array in the global `currentComments` variable.
- *    (If no comments exist, use an empty array.)
- * 5. If the resource is found:
- *    - Call `renderResourceDetails()` with the resource object.
- *    - Call `renderComments()` to display the initial comments.
- *    - Add the 'submit' event listener to the comment form
- *      (id="comment-form"), calling `handleAddComment`.
- * 6. If the resource is not found, display an error in the title element.
+ * 1. Use `fetch()` to GET all resources from the API:
+ *    - URL: './api/index.php'
+ *    - The API returns { success: true, data: [...] }
+ * 2. Store the resources array (from `data`) in the global `resources` variable.
+ * 3. Call `renderTable()` to populate the table for the first time.
+ * 4. Add the 'submit' event listener to the resource form (id="resource-form"),
+ *    calling `handleAddResource`.
+ * 5. Add the 'click' event listener to the table body (id="resources-tbody"),
+ *    calling `handleTableClick`.
  */
-async function initializePage() {
-  // ... your implementation here ...
+async function loadAndInitialize() {
+  const response = await fetch('./api/index.php');
+  const result   = await response.json();
+
+  if (result.success) {
+    resources = result.data;
+    renderTable();
+  }
+
+  resourceForm.addEventListener('submit', handleAddResource);
+  resourcesTbody.addEventListener('click', handleTableClick);
 }
 
 // --- Initial Page Load ---
-initializePage();
+// Call the main async function to start the application.
+loadAndInitialize();
