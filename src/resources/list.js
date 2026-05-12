@@ -1,18 +1,16 @@
 /*
   Requirement: Populate the "Course Resources" list page.
-
   Instructions:
   1. Link this file to `list.html` using:
      <script src="list.js" defer></script>
-
   2. In `list.html`, add id="resource-list-section" to the
      <section> element that will contain the resource articles.
-
   3. Implement the TODOs below.
 */
 
 // --- Element Selections ---
 // TODO: Select the section for the resource list ('#resource-list-section').
+const resourceListSection = document.querySelector('#resource-list-section');
 
 // --- Functions ---
 
@@ -24,7 +22,14 @@
  * `details.html?id=${id}` so the detail page knows which resource to load.
  */
 function createResourceArticle(resource) {
-  // ... your implementation here ...
+  const { id, title, description } = resource;
+  const article = document.createElement('article');
+  article.innerHTML = `
+    <h2>${title}</h2>
+    <p>${description}</p>
+    <a href="details.html?id=${id}">View Resource & Discussion</a>
+  `;
+  return article;
 }
 
 /**
@@ -40,7 +45,16 @@ function createResourceArticle(resource) {
  *    - Append the returned <article> element to the list section.
  */
 async function loadResources() {
-  // ... your implementation here ...
+  const response = await fetch('./api/index.php');
+  const result   = await response.json();
+
+  resourceListSection.innerHTML = '';
+
+  if (result.success) {
+    result.data.forEach(resource => {
+      resourceListSection.appendChild(createResourceArticle(resource));
+    });
+  }
 }
 
 // --- Initial Page Load ---
