@@ -58,17 +58,12 @@ function createResourceRow(resource) {
  * 3. For each resource, call `createResourceRow()` and
  *    append the returned <tr> to the table body.
  */
-async function loadAndInitialize() {
-  const response = await fetch('./api/index.php');
-  const result   = await response.json();
-
-  if (result.success) {
-    resources = result.data;
-    renderTable();
-  }
-
-  if (resourceForm) resourceForm.addEventListener('submit', handleAddResource);
-  if (resourcesTbody) resourcesTbody.addEventListener('click', handleTableClick);
+function renderTable() {
+  if (!resourcesTbody) return;
+  resourcesTbody.innerHTML = '';
+  resources.forEach(resource => {
+    resourcesTbody.appendChild(createResourceRow(resource));
+  });
 }
 /**
  * TODO: Implement the handleAddResource function.
@@ -224,8 +219,8 @@ async function loadAndInitialize() {
     renderTable();
   }
 
-  resourceForm.addEventListener('submit', handleAddResource);
-  resourcesTbody.addEventListener('click', handleTableClick);
+  if (resourceForm) resourceForm.addEventListener('submit', handleAddResource);
+  if (resourcesTbody) resourcesTbody.addEventListener('click', handleTableClick);
 }
 
 // --- Initial Page Load ---
