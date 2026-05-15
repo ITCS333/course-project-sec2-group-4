@@ -1,5 +1,18 @@
 <?php
 
+ob_start();
+
+register_shutdown_function(function () {
+    $error = error_get_last();
+    if ($error && in_array($error['type'], [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE, E_USER_ERROR], true)) {
+        if (!headers_sent()) {
+            header('Content-Type: application/json; charset=utf-8');
+        }
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Internal Server Error.']);
+    }
+});
+
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
@@ -275,7 +288,12 @@ try {
 }
 
 function sendResponse($data, $statusCode = 200) {
+    if (ob_get_length() > 0) {
+        ob_clean();
+    }
+
     http_response_code($statusCode);
+    header('Content-Type: application/json; charset=utf-8');
 
     if ($statusCode < 400) {
         echo json_encode(['success' => true, 'data' => $data]);
@@ -294,4 +312,3 @@ function sanitizeInput($data) {
     return htmlspecialchars(strip_tags(trim($data)), ENT_QUOTES, 'UTF-8');
 }
 
-?>

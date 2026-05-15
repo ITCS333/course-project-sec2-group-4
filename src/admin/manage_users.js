@@ -47,13 +47,6 @@ function renderTable(userArray) {
   userTableBody.innerHTML = '';
 
   if (!userArray || userArray.length === 0) {
-    const emptyRow = document.createElement('tr');
-    const emptyCell = document.createElement('td');
-    emptyCell.colSpan = 4;
-    emptyCell.textContent = 'No users found.';
-    emptyCell.style.textAlign = 'center';
-    emptyRow.appendChild(emptyCell);
-    userTableBody.appendChild(emptyRow);
     return;
   }
 
@@ -79,6 +72,8 @@ async function handleChangePassword(event) {
     return;
   }
 
+  passwordForm.reset();
+
   try {
     const response = await fetch('../api/index.php?action=change_password', {
       method: 'POST',
@@ -97,7 +92,6 @@ async function handleChangePassword(event) {
     }
 
     alert('Password updated successfully!');
-    passwordForm.reset();
   } catch (error) {
     console.error(error);
     alert('Unable to update password. Please try again later.');
