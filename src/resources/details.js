@@ -3,6 +3,8 @@ function getResourceIdFromURL() {
   return params.get('id');
 }
 
+let currentComments = [];
+
 function renderResourceDetails(resource) {
   const resourceTitle = document.getElementById('resource-title');
   const resourceDescription = document.getElementById('resource-description');
@@ -28,19 +30,30 @@ function createCommentArticle(comment) {
   return article;
 }
 
-function renderComments(comments) {
+function renderComments() {
   const commentList = document.getElementById('comment-list');
   if (!commentList) return;
   commentList.innerHTML = '';
-  if (!Array.isArray(comments) || comments.length === 0) {
+  if (!Array.isArray(currentComments) || currentComments.length === 0) {
     const empty = document.createElement('p');
     empty.textContent = 'No comments yet. Be the first to comment!';
     commentList.appendChild(empty);
     return;
   }
-  comments.forEach(comment => {
+  currentComments.forEach(comment => {
     commentList.appendChild(createCommentArticle(comment));
   });
+}
+
+async function loadComments(resourceId) {
+  const response = await fetch(`./api/index.php?action=comments&resource_id=${encodeURIComponent(resourceId)}`);
+  const result = await response.json();
+  if (result.success && Array.isArray(result.data)) {
+    currentComments = result.data;
+  } else {
+    currentComments = [];
+  }
+  renderComments();
 }
 
 async function loadResource(resourceId) {
@@ -48,16 +61,6 @@ async function loadResource(resourceId) {
   const result = await response.json();
   if (result.success && result.data) {
     renderResourceDetails(result.data);
-  }
-}
-
-async function loadComments(resourceId) {
-  const response = await fetch(`./api/index.php?action=comments&resource_id=${encodeURIComponent(resourceId)}`);
-  const result = await response.json();
-  if (result.success && Array.isArray(result.data)) {
-    renderComments(result.data);
-  } else {
-    renderComments([]);
   }
 }
 
@@ -117,5 +120,6 @@ if (typeof module !== 'undefined') {
     createCommentArticle,
     getResourceIdFromURL,
     renderResourceDetails,
+    currentComments,
   };
 }
