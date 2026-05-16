@@ -1,17 +1,13 @@
-const resourceTitle = document.getElementById('resource-title');
-const resourceDescription = document.getElementById('resource-description');
-const resourceLink = document.getElementById('resource-link');
-const commentList = document.getElementById('comment-list');
-const commentForm = document.getElementById('comment-form');
-const commentInput = document.getElementById('new-comment');
-let currentComments = [];
-
 function getResourceIdFromURL() {
   const params = new URLSearchParams(window.location.search);
   return params.get('id');
 }
 
 function renderResourceDetails(resource) {
+  const resourceTitle = document.getElementById('resource-title');
+  const resourceDescription = document.getElementById('resource-description');
+  const resourceLink = document.getElementById('resource-link');
+
   if (!resource) return;
   if (resourceTitle) resourceTitle.textContent = resource.title;
   if (resourceDescription) resourceDescription.textContent = resource.description;
@@ -32,16 +28,17 @@ function createCommentArticle(comment) {
   return article;
 }
 
-function renderComments() {
+function renderComments(comments) {
+  const commentList = document.getElementById('comment-list');
   if (!commentList) return;
   commentList.innerHTML = '';
-  if (!Array.isArray(currentComments) || currentComments.length === 0) {
+  if (!Array.isArray(comments) || comments.length === 0) {
     const empty = document.createElement('p');
     empty.textContent = 'No comments yet. Be the first to comment!';
     commentList.appendChild(empty);
     return;
   }
-  currentComments.forEach(comment => {
+  comments.forEach(comment => {
     commentList.appendChild(createCommentArticle(comment));
   });
 }
@@ -58,19 +55,19 @@ async function loadComments(resourceId) {
   const response = await fetch(`./api/index.php?action=comments&resource_id=${encodeURIComponent(resourceId)}`);
   const result = await response.json();
   if (result.success && Array.isArray(result.data)) {
-    currentComments = result.data;
+    renderComments(result.data);
   } else {
-    currentComments = [];
+    renderComments([]);
   }
-  renderComments();
 }
 
 async function handleAddComment(event) {
   event.preventDefault();
-  const resourceId = getResourceIdFromURL();
-  if (!resourceId || !commentInput) return;
 
-  const text = commentInput.value.trim();
+  const commentInput = document.getElementById('new-comment');
+  const resourceId = getResourceIdFromURL();
+
+  const text = commentInput ? commentInput.value.trim() : '';
   if (!text) return;
 
   const response = await fetch(`./api/index.php?action=comment`, {
@@ -79,22 +76,27 @@ async function handleAddComment(event) {
     body: JSON.stringify({ resource_id: resourceId, author: 'Anonymous', text }),
   });
 
-  commentInput.value = '';
+  if (commentInput) commentInput.value = '';
 
   const result = await response.json();
-  if (result.success) {
+  if (result.success && resourceId) {
     await loadComments(resourceId);
   }
 }
 
 async function initializePage() {
   const resourceId = getResourceIdFromURL();
+  const resourceTitle = document.getElementById('resource-title');
+  const commentForm = document.getElementById('comment-form');
+
   if (!resourceId) {
     if (resourceTitle) resourceTitle.textContent = 'Resource ID missing';
     return;
   }
+
   await loadResource(resourceId);
   await loadComments(resourceId);
+
   if (commentForm) {
     commentForm.addEventListener('submit', handleAddComment);
   }
@@ -106,7 +108,6 @@ if (document.readyState === 'loading') {
   initializePage();
 }
 
-// Export for Jest tests
 if (typeof module !== 'undefined') {
   module.exports = {
     handleAddComment,
