@@ -1,11 +1,4 @@
 <?php
-/**
- * Course Resources API
- */
-
-// ============================================================================
-// HEADERS AND INITIALIZATION
-// ============================================================================
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
@@ -17,10 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-require_once './config/Database.php';
-
-$database = new Database();
-$db = $database->getConnection();
+require_once __DIR__ . '/../../common/db.php';
+$db = getDBConnection();
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -33,9 +24,6 @@ $resourceId = $_GET['resource_id'] ?? null;
 $commentId  = $_GET['comment_id'] ?? null;
 
 
-// ============================================================================
-// RESOURCE FUNCTIONS
-// ============================================================================
 
 function getAllResources($db) {
     $sql = "SELECT id, title, description, link, created_at FROM resources";
@@ -189,9 +177,6 @@ function deleteResource($db, $resourceId) {
 }
 
 
-// ============================================================================
-// COMMENT FUNCTIONS
-// ============================================================================
 
 function getCommentsByResourceId($db, $resourceId) {
     if (!$resourceId || !is_numeric($resourceId)) {
@@ -270,10 +255,6 @@ function deleteComment($db, $commentId) {
 }
 
 
-// ============================================================================
-// MAIN REQUEST ROUTER
-// ============================================================================
-
 try {
     if ($method === 'GET') {
 
@@ -318,10 +299,6 @@ try {
     sendResponse(['success' => false, 'message' => 'An unexpected error occurred.'], 500);
 }
 
-
-// ============================================================================
-// HELPER FUNCTIONS
-// ============================================================================
 
 function sendResponse($data, $statusCode = 200) {
     http_response_code($statusCode);
