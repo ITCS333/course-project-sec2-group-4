@@ -105,3 +105,16 @@ if (document.readyState === 'loading') {
 } else {
   initializePage();
 }
+
+// Export for Jest tests
+if (typeof module !== 'undefined') {
+  module.exports = {
+    handleAddComment,
+    loadResource,
+    loadComments,
+    renderComments,
+    createCommentArticle,
+    getResourceIdFromURL,
+    renderResourceDetails,
+  };
+}
