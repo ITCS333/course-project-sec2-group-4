@@ -1,187 +1,248 @@
-/*
-  Requirement: Populate the single topic page and manage replies.
+const topicSubject =
+  document.getElementById("topic-subject");
 
-  Instructions:
-  1. This file is already linked to `topic.html` via:
-         <script src="topic.js" defer></script>
+const opMessage =
+  document.getElementById("op-message");
 
-  2. The following ids must exist in topic.html (already listed in the
-     HTML comments):
-       #topic-subject        — <h1>
-       #original-post        — <article>
-       #op-message           — <p>    inside #original-post
-       #op-footer            — <footer> inside #original-post
-       #reply-list-container — <div>
-       #reply-form           — <form>
-       #new-reply            — <textarea>
+const opFooter =
+  document.getElementById("op-footer");
 
-  3. Implement the TODOs below.
+const replyListContainer =
+  document.getElementById("reply-list-container");
 
-  API base URL: ./api/index.php
-  Topic object shape returned by the API (from the topics table):
-    {
-      id:         number,   // integer primary key from the topics table
-      subject:    string,
-      message:    string,
-      author:     string,
-      created_at: string    // "YYYY-MM-DD HH:MM:SS"
-    }
+const replyForm =
+  document.getElementById("reply-form");
 
-  Reply object shape returned by the API (from the replies table):
-    {
-      id:         number,   // integer primary key from the replies table
-      topic_id:   number,   // integer FK → topics.id
-      text:       string,
-      author:     string,
-      created_at: string    // "YYYY-MM-DD HH:MM:SS"
-    }
-*/
+const topicActions =
+  document.getElementById("topic-actions");
 
-// --- Global Data Store ---
-let currentTopicId = null;
-let currentReplies = [];
+const params =
+  new URLSearchParams(window.location.search);
 
-// --- Element Selections ---
-// TODO: Select each element by its id:
-//   topicSubject, opMessage, opFooter,
-//   replyListContainer, replyForm, newReplyText.
+const topicId = params.get("id");
 
-// --- Functions ---
+let currentTopic = null;
 
-/**
- * TODO: Implement getTopicIdFromURL.
- *
- * It should:
- * 1. Read window.location.search.
- * 2. Construct a URLSearchParams object from it.
- * 3. Return the value of the 'id' parameter (a string that represents
- *    the integer primary key of the topic).
- */
-function getTopicIdFromURL() {
-  // ... your implementation here ...
-}
+let replies = [];
 
-/**
- * TODO: Implement renderOriginalPost.
- *
- * Parameters:
- *   topic — the topic object returned by the API (see shape above).
- *
- * It should:
- * 1. Set topicSubject.textContent = topic.subject.
- * 2. Set opMessage.textContent    = topic.message.
- * 3. Set opFooter.textContent     = "Posted by: " + topic.author +
- *    " on " + topic.created_at.
- *    (Note: use topic.created_at, which matches the SQL column name.)
- */
-function renderOriginalPost(topic) {
-  // ... your implementation here ...
-}
-
-/**
- * TODO: Implement createReplyArticle.
- *
- * Parameters:
- *   reply — one reply object from the API:
- *     { id, topic_id, text, author, created_at }
- *
- * Returns an <article> element:
- *   <article>
- *     <p>{reply.text}</p>
- *     <footer>Posted by: {reply.author} on {reply.created_at}</footer>
- *     <div>
- *       <button class="delete-reply-btn" data-id="{id}">Delete</button>
- *     </div>
- *   </article>
- *
- * Note: use reply.created_at (not a field called "date") — this matches
- * the SQL column name.
- */
 function createReplyArticle(reply) {
-  // ... your implementation here ...
+
+  const article =
+    document.createElement("article");
+
+  const p =
+    document.createElement("p");
+
+  p.textContent = reply.text;
+
+  const footer =
+    document.createElement("footer");
+
+  footer.textContent =
+    `Posted by: ${reply.author} on ${reply.created_at}`;
+
+  const actions =
+    document.createElement("div");
+
+  const deleteBtn =
+    document.createElement("button");
+
+  deleteBtn.className =
+    "delete-reply-btn";
+
+  deleteBtn.dataset.id = reply.id;
+
+  deleteBtn.textContent = "Delete";
+
+  actions.appendChild(deleteBtn);
+
+  article.appendChild(p);
+  article.appendChild(footer);
+  article.appendChild(actions);
+
+  return article;
 }
 
-/**
- * TODO: Implement renderReplies.
- *
- * It should:
- * 1. Clear replyListContainer (set innerHTML to "").
- * 2. Loop through currentReplies.
- * 3. For each reply, call createReplyArticle(reply) and append the
- *    result to replyListContainer.
- */
 function renderReplies() {
-  // ... your implementation here ...
+
+  replyListContainer.innerHTML = "";
+
+  for (let reply of replies) {
+
+    const article =
+      createReplyArticle(reply);
+
+    replyListContainer.appendChild(article);
+  }
 }
 
-/**
- * TODO: Implement handleAddReply (async).
- *
- * This is the event handler for replyForm's 'submit' event.
- * It should:
- * 1. Call event.preventDefault().
- * 2. Read and trim the value from newReplyText (#new-reply).
- * 3. If the value is empty, return early (do nothing).
- * 4. Send a POST to './api/index.php?action=reply' with the body:
- *      {
- *        topic_id: currentTopicId,   // integer
- *        author:   "Student",        // hardcoded for this exercise
- *        text:     replyText
- *      }
- *    The API inserts a row into the replies table.
- * 5. On success (result.success === true):
- *    - Push the new reply object (from result.data) onto currentReplies.
- *    - Call renderReplies() to refresh the list.
- *    - Clear newReplyText.
- */
-async function handleAddReply(event) {
-  // ... your implementation here ...
+function renderTopic() {
+
+  if (!currentTopic) return;
+
+  topicSubject.textContent =
+    currentTopic.subject;
+
+  opMessage.textContent =
+    currentTopic.message;
+
+  opFooter.textContent =
+    `Posted by: ${currentTopic.author} on ${currentTopic.created_at}`;
+
+  topicActions.innerHTML = "";
+
+  const deleteBtn =
+    document.createElement("button");
+
+  deleteBtn.className = "delete-btn";
+
+  deleteBtn.dataset.id = currentTopic.id;
+
+  deleteBtn.textContent = "Delete Topic";
+
+  topicActions.appendChild(deleteBtn);
 }
 
-/**
- * TODO: Implement handleReplyListClick (async).
- *
- * This is a delegated click listener on replyListContainer.
- * It should:
- * 1. If event.target has class "delete-reply-btn":
- *    a. Read the integer id from event.target.dataset.id.
- *    b. Send a DELETE to './api/index.php?action=delete_reply&id=<id>'.
- *    c. On success, remove the reply from currentReplies and call
- *       renderReplies().
- */
-async function handleReplyListClick(event) {
-  // ... your implementation here ...
+async function loadTopic() {
+
+  const response =
+    await fetch(`./api/index.php?id=${topicId}`);
+
+  const result =
+    await response.json();
+
+  if (result.success) {
+
+    currentTopic = result.data;
+
+    renderTopic();
+  }
 }
 
-/**
- * TODO: Implement initializePage (async).
- *
- * It should:
- * 1. Call getTopicIdFromURL() and store the result in currentTopicId.
- * 2. If currentTopicId is null or empty, set
- *    topicSubject.textContent = "Topic not found." and return.
- * 3. Fetch both the topic details and its replies in parallel using
- *    Promise.all:
- *      - Topic:   GET ./api/index.php?id={currentTopicId}
- *                 Response: { success: true, data: { ...topic object } }
- *      - Replies: GET ./api/index.php?action=replies&topic_id={currentTopicId}
- *                 Response: { success: true, data: [ ...reply objects ] }
- *    Replies are stored in the replies table
- *    (columns: id, topic_id, text, author, created_at).
- * 4. Store the replies array in currentReplies
- *    (use an empty array if none exist).
- * 5. If the topic was found:
- *    - Call renderOriginalPost(topic).
- *    - Call renderReplies().
- *    - Attach the 'submit' listener to replyForm (calls handleAddReply).
- *    - Attach a 'click' listener to replyListContainer
- *      (calls handleReplyListClick — event delegation for delete).
- * 6. If the topic was not found:
- *    - Set topicSubject.textContent = "Topic not found."
- */
+async function loadReplies() {
+
+  const response =
+    await fetch(
+      `./api/index.php?action=replies&topic_id=${topicId}`
+    );
+
+  const result =
+    await response.json();
+
+  if (result.success) {
+
+    replies = result.data;
+
+    renderReplies();
+  }
+}
+
+async function handleReplySubmit(event) {
+
+  event.preventDefault();
+
+  const replyText =
+    document.getElementById("new-reply").value;
+
+  const response =
+    await fetch("./api/index.php?action=reply", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        topic_id: topicId,
+        text: replyText,
+        author: "Student"
+      })
+    });
+
+  const result =
+    await response.json();
+
+  if (result.success) {
+
+    replies.push(result.data);
+
+    renderReplies();
+
+    replyForm.reset();
+  }
+}
+
+async function handleReplyDelete(event) {
+
+  if (
+    event.target.classList.contains(
+      "delete-reply-btn"
+    )
+  ) {
+
+    const id =
+      event.target.dataset.id;
+
+    const response =
+      await fetch(
+        `./api/index.php?action=delete_reply&id=${id}`,
+        {
+          method: "DELETE"
+        }
+      );
+
+    const result =
+      await response.json();
+
+    if (result.success) {
+
+      replies =
+        replies.filter(
+          reply => reply.id != id
+        );
+
+      renderReplies();
+    }
+  }
+
+  if (
+    event.target.classList.contains(
+      "delete-btn"
+    )
+  ) {
+
+    const response =
+      await fetch(
+        `./api/index.php?id=${topicId}`,
+        {
+          method: "DELETE"
+        }
+      );
+
+    const result =
+      await response.json();
+
+    if (result.success) {
+
+      window.location.href =
+        "board.html";
+    }
+  }
+}
+
 async function initializePage() {
-  // ... your implementation here ...
+
+  await loadTopic();
+
+  await loadReplies();
+
+  replyForm.addEventListener(
+    "submit",
+    handleReplySubmit
+  );
+
+  document.addEventListener(
+    "click",
+    handleReplyDelete
+  );
 }
 
-// --- Initial Page Load ---
 initializePage();
