@@ -18,10 +18,16 @@ function createResourceRow(resource) {
   return tr;
 }
 
-function renderTable() {
+function renderTable(data = null) {
   if (!resourcesTbody) return;
   resourcesTbody.innerHTML = '';
-  resources.forEach(resource => {
+
+  if (Array.isArray(data)) {
+    resources = data;
+  }
+
+  const list = Array.isArray(data) ? data : resources;
+  list.forEach(resource => {
     resourcesTbody.appendChild(createResourceRow(resource));
   });
 }
