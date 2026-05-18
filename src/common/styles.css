@@ -1,13 +1,18 @@
 :root {
-    --color-main: #2563eb;
-    --color-secondary: #1e40af;
-    --color-background: #f8fafc;
+    --color-dark-blue: #2C5EAD;
+    --color-main: #1591DC;
+    --color-light-blue: #4BB8FA;
+    --color-very-light-blue: #C4E2F5;
+    --color-secondary: #2C5EAD;
+    --color-background: #eef7fd;
     --color-card: #ffffff;
-    --color-text: #1f2937;
-    --color-muted: #6b7280;
-    --color-border: #e5e7eb;
+    --color-text: #183247;
+    --color-muted: #5f7485;
+    --color-border: #b9d8ec;
     --color-success: #16a34a;
     --color-danger: #dc2626;
+    --shadow-sm: 0 8px 20px rgba(44, 94, 173, 0.08);
+    --shadow-md: 0 14px 34px rgba(44, 94, 173, 0.12);
     --font-main: "Segoe UI", Arial, sans-serif;
 }
 
@@ -22,7 +27,8 @@ html {
 body {
     margin: 0;
     min-height: 100vh;
-    background: var(--color-background);
+    background:
+        linear-gradient(180deg, rgba(196, 226, 245, 0.78) 0%, rgba(238, 247, 253, 0.94) 34%, #ffffff 100%);
     color: var(--color-text);
     font-family: var(--font-main);
     line-height: 1.6;
@@ -45,7 +51,8 @@ a {
 a:hover,
 a:focus-visible {
     color: var(--color-secondary);
-    outline: none;
+    outline: 2px solid rgba(75, 184, 250, 0.5);
+    outline-offset: 3px;
 }
 
 h1,
@@ -57,6 +64,15 @@ p,
 ul,
 ol {
     margin-top: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    color: var(--color-dark-blue);
+    line-height: 1.2;
 }
 
 p {
@@ -78,18 +94,54 @@ ol {
     width: min(100% - 32px, 1100px);
 }
 
+header.navbar,
 .navbar,
 nav {
-    background: var(--color-card);
-    border-bottom: 1px solid var(--color-border);
+    background: linear-gradient(135deg, var(--color-dark-blue), var(--color-main));
+    border-bottom: 1px solid rgba(75, 184, 250, 0.38);
+    box-shadow: var(--shadow-sm);
+    color: #ffffff;
+}
+
+header.navbar nav,
+.navbar nav {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    margin-left: auto;
 }
 
 .navbar .container,
-nav .container {
-    padding: 18px 0;
+nav .container,
+nav > div {
+    align-items: center;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    padding: 16px 0;
 }
 
+header.navbar {
+    margin-bottom: 24px;
+    padding: 0;
+}
+
+header.navbar h1,
+.navbar h1 {
+    color: #ffffff;
+    font-size: clamp(1.45rem, 2.4vw, 2.15rem);
+    margin: 0;
+}
+
+header.navbar ul,
+header.navbar ol,
+.navbar ul,
+.navbar ol,
+.navbar nav ul,
+.navbar nav ol,
+nav ul,
 nav ol {
+    align-items: center;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
@@ -98,24 +150,39 @@ nav ol {
     padding: 0;
 }
 
+header.navbar li,
+.navbar li,
 nav li {
     margin: 0;
 }
 
+header.navbar a,
+.navbar a,
 nav a {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     padding: 10px 14px;
     border-radius: 999px;
-    border: 1px solid transparent;
-    background: rgba(37, 99, 235, 0.08);
-    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+    min-height: 42px;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 
+header.navbar a:hover,
+header.navbar a:focus-visible,
+.navbar a:hover,
+.navbar a:focus-visible,
 nav a:hover,
 nav a:focus-visible {
-    background: rgba(37, 99, 235, 0.16);
-    border-color: rgba(37, 99, 235, 0.24);
+    background: #ffffff;
+    border-color: #ffffff;
+    color: var(--color-dark-blue);
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 3px;
+    transform: translateY(-1px);
 }
 
 nav > div,
@@ -134,15 +201,16 @@ main {
 main > section:first-of-type {
     padding: 28px;
     margin-bottom: 24px;
-    background: rgba(37, 99, 235, 0.06);
-    border: 1px solid rgba(37, 99, 235, 0.18);
+    background: linear-gradient(135deg, rgba(196, 226, 245, 0.8), rgba(255, 255, 255, 0.95));
+    border: 1px solid rgba(21, 145, 220, 0.22);
     border-radius: 16px;
+    box-shadow: var(--shadow-sm);
 }
 
 main > section:first-of-type h1 {
     margin-bottom: 12px;
     font-size: clamp(2rem, 2.6vw, 2.8rem);
-    color: var(--color-text);
+    color: var(--color-dark-blue);
 }
 
 main > section:last-of-type {
@@ -156,13 +224,13 @@ main article {
     border: 1px solid var(--color-border);
     border-radius: 16px;
     padding: 20px;
-    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+    box-shadow: var(--shadow-sm);
     transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 main article:hover {
     transform: translateY(-2px);
-    box-shadow: 0 16px 30px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--shadow-md);
 }
 
 main a {
@@ -171,8 +239,8 @@ main a {
     justify-content: center;
     padding: 0.9rem 1.2rem;
     border-radius: 999px;
-    border: 1px solid rgba(37, 99, 235, 0.18);
-    background: rgba(37, 99, 235, 0.08);
+    border: 1px solid rgba(21, 145, 220, 0.24);
+    background: rgba(196, 226, 245, 0.46);
     color: var(--color-main);
     text-decoration: none;
     transition: background 0.2s ease, border-color 0.2s ease;
@@ -180,8 +248,8 @@ main a {
 
 main a:hover,
 main a:focus-visible {
-    background: rgba(37, 99, 235, 0.16);
-    border-color: rgba(37, 99, 235, 0.26);
+    background: rgba(75, 184, 250, 0.2);
+    border-color: rgba(21, 145, 220, 0.42);
 }
 
 .card,
@@ -195,7 +263,7 @@ fieldset {
 .card {
     padding: 22px;
     margin-bottom: 20px;
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    box-shadow: var(--shadow-sm);
 }
 
 .card h2,
@@ -229,10 +297,15 @@ input[type="button"] {
 .btn:hover,
 button:hover,
 .btn:focus-visible,
-button:focus-visible {
+button:focus-visible,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+input[type="submit"]:focus-visible,
+input[type="button"]:focus-visible {
     border-color: var(--color-main);
     color: var(--color-main);
-    outline: none;
+    outline: 2px solid rgba(75, 184, 250, 0.35);
+    outline-offset: 2px;
 }
 
 .btn-primary,
@@ -243,14 +316,16 @@ button:focus-visible {
     background: var(--color-main);
     border-color: var(--color-main);
     color: #ffffff;
+    box-shadow: 0 8px 18px rgba(21, 145, 220, 0.2);
 }
 
 .btn-primary:hover,
 #add-assignment:hover,
 #comment-form button[type="submit"]:hover,
 .edit-btn:hover {
-    background: var(--color-secondary);
-    border-color: var(--color-secondary);
+    background: var(--color-dark-blue);
+    border-color: var(--color-dark-blue);
+    color: #ffffff;
 }
 
 .btn-danger,
@@ -276,6 +351,7 @@ table {
     background: var(--color-card);
     border-radius: 14px;
     overflow: hidden;
+    box-shadow: var(--shadow-sm);
 }
 
 th,
@@ -287,13 +363,13 @@ td {
 }
 
 th {
-    background: rgba(37, 99, 235, 0.08);
-    color: var(--color-secondary);
+    background: rgba(196, 226, 245, 0.72);
+    color: var(--color-dark-blue);
     font-weight: 700;
 }
 
 tbody tr:hover {
-    background: rgba(37, 99, 235, 0.05);
+    background: rgba(75, 184, 250, 0.12);
 }
 
 .form-group {
@@ -302,6 +378,7 @@ tbody tr:hover {
 
 label {
     display: block;
+    color: var(--color-dark-blue);
     font-weight: 700;
     margin-bottom: 8px;
 }
@@ -318,13 +395,15 @@ select {
     padding: 14px;
     width: 100%;
     background: #ffffff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 input:focus,
 textarea:focus,
 select:focus {
     border-color: var(--color-main);
-    outline: 2px solid rgba(37, 99, 235, 0.18);
+    box-shadow: 0 0 0 4px rgba(75, 184, 250, 0.2);
+    outline: none;
 }
 
 textarea {
@@ -338,7 +417,7 @@ fieldset {
 }
 
 legend {
-    color: var(--color-muted);
+    color: var(--color-dark-blue);
     font-weight: 700;
     padding: 0 8px;
 }
@@ -353,6 +432,11 @@ header {
     padding-top: 18px;
 }
 
+body > header:not(.navbar) {
+    width: min(100% - 32px, 960px);
+    margin: 0 auto 20px;
+}
+
 main {
     padding-bottom: 36px;
 }
@@ -360,9 +444,10 @@ main {
 .hero {
     padding: 32px;
     margin-bottom: 24px;
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.14), rgba(37, 99, 235, 0.06));
-    border: 1px solid rgba(37, 99, 235, 0.16);
+    background: linear-gradient(135deg, rgba(196, 226, 245, 0.9), rgba(255, 255, 255, 0.94));
+    border: 1px solid rgba(21, 145, 220, 0.2);
     border-radius: 16px;
+    box-shadow: var(--shadow-sm);
 }
 
 .hero h1 {
@@ -382,7 +467,7 @@ main {
 
 .card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+    box-shadow: var(--shadow-md);
 }
 
 .assignments-page #assignment-list-section {
@@ -425,7 +510,7 @@ main {
     background: var(--color-card);
     border: 1px solid var(--color-border);
     border-radius: 18px;
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+    box-shadow: var(--shadow-sm);
     padding: 24px;
     margin-bottom: 24px;
 }
@@ -433,13 +518,13 @@ main {
 #password-management h2,
 #user-management h2 {
     margin-bottom: 14px;
-    color: var(--color-text);
+    color: var(--color-dark-blue);
 }
 
 #password-management fieldset,
 #add-user-form fieldset {
     padding: 18px;
-    background: rgba(37, 99, 235, 0.03);
+    background: rgba(196, 226, 245, 0.22);
 }
 
 #password-management legend,
@@ -458,7 +543,7 @@ main {
     border: 1px solid var(--color-border);
     border-radius: 14px;
     padding: 16px;
-    background: rgba(248, 250, 252, 0.92);
+    background: rgba(238, 247, 253, 0.92);
 }
 
 #user-management summary {
@@ -486,7 +571,7 @@ main {
     border-collapse: collapse;
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+    box-shadow: var(--shadow-sm);
 }
 
 #user-table th,
@@ -497,15 +582,15 @@ main {
 }
 
 #user-table th {
-    background: rgba(37, 99, 235, 0.08);
+    background: rgba(196, 226, 245, 0.72);
 }
 
 #user-table tbody tr:nth-child(even) {
-    background: rgba(15, 23, 42, 0.03);
+    background: rgba(238, 247, 253, 0.7);
 }
 
 #user-table tbody tr:hover {
-    background: rgba(37, 99, 235, 0.08);
+    background: rgba(75, 184, 250, 0.14);
 }
 
 #user-table tbody td:last-child {
@@ -533,8 +618,35 @@ main {
         padding: 16px;
     }
 
+    .navbar .container,
+    nav .container,
+    nav > div {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    header.navbar ul,
+    header.navbar ol,
+    .navbar ul,
+    .navbar ol,
+    nav ul,
+    nav ol {
+        align-items: stretch;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    header.navbar a,
+    .navbar a,
+    nav a {
+        width: 100%;
+    }
+
     .btn,
-    button {
+    button,
+    input[type="submit"],
+    input[type="button"] {
         width: 100%;
     }
 
