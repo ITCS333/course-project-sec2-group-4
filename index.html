@@ -78,7 +78,6 @@
                 renderHomepage(result.user || { name: 'Development User', is_admin: 1 });
             } catch (error) {
                 console.error('Authentication check failed:', error);
-                // Fallback for dev environment
                 renderHomepage({ name: 'Development Admin', is_admin: 1 });
             }
         }
@@ -95,7 +94,6 @@
             menuItems.forEach(item => {
                 if (item.adminOnly && user.is_admin != 1) return;
 
-                // Build Nav Link
                 const li = document.createElement('li');
                 const a = document.createElement('a');
                 a.href = item.path;
@@ -104,7 +102,6 @@
                 li.appendChild(a);
                 navLinks.appendChild(li);
 
-                // Build Grid Card
                 if (item.title !== 'Home') {
                     const accentColor = item.accent === 'emerald' ? 'border-emerald-500' : 
                                        item.accent === 'amber' ? 'border-amber-400' : 'border-indigo-500';

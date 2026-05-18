@@ -4,8 +4,8 @@ const passwordInput = document.getElementById("password");
 const messageContainer = document.getElementById("message-container");
 
 function displayMessage(message, type) {
-  messageContainer.innerHTML = ''; // Clear previous content
-  messageContainer.className = type; // Set the class for the test (e.g., "error")
+  messageContainer.innerHTML = '';
+  messageContainer.className = type;
   
   const messageContent = document.createElement('div');
   messageContent.textContent = message;
