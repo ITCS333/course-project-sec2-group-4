@@ -85,19 +85,26 @@ function getWeekIdFromURL() {
  */
 function renderWeekDetails(week) {
   weekTitle.textContent = week.title || "";
+  weekTitle.className = "text-3xl font-bold text-slate-900 mb-2";
+
   weekStartDate.textContent = "Starts on: " + (week.start_date || "");
+  weekStartDate.className = "text-sm font-medium text-indigo-600 mb-6";
+
   weekDescription.textContent = week.description || "";
+  weekDescription.className = "text-lg text-slate-700 mb-8 leading-relaxed";
 
   weekLinksList.innerHTML = "";
+  weekLinksList.className = "flex flex-wrap gap-3 mb-8";
 
   const links = Array.isArray(week.links) ? week.links : [];
   links.forEach(function (url) {
     const li = document.createElement("li");
     const link = document.createElement("a");
     link.href = url;
-    link.textContent = url;
+    link.textContent = new URL(url).hostname;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
+    link.className = "inline-flex items-center px-3 py-1.5 bg-slate-100 text-slate-700 text-xs font-medium rounded-full hover:bg-slate-200 transition-colors border border-slate-200";
     li.appendChild(link);
     weekLinksList.appendChild(li);
   });
@@ -118,12 +125,14 @@ function renderWeekDetails(week) {
  */
 function createCommentArticle(comment) {
   const article = document.createElement("article");
-  article.className = "card";
+  article.className = "bg-slate-50 border border-slate-200 rounded-lg p-4 mb-4";
 
   const textPara = document.createElement("p");
+  textPara.className = "text-slate-800 mb-2";
   textPara.textContent = comment.text || "";
 
   const footer = document.createElement("footer");
+  footer.className = "text-xs text-slate-500 font-medium";
   footer.textContent = "Posted by: " + (comment.author || "Anonymous");
 
   article.append(textPara, footer);

@@ -5,7 +5,14 @@ const messageContainer = document.getElementById("message-container");
 
 function displayMessage(message, type) {
   messageContainer.textContent = message;
-  messageContainer.className = type;
+  
+  const baseClasses = "p-4 mb-4 text-sm rounded-lg border font-medium transition-all duration-300";
+  const typeStyles = {
+    success: "text-green-800 border-green-300 bg-green-50",
+    error: "text-red-800 border-red-300 bg-red-50",
+    info: "text-blue-800 border-blue-300 bg-blue-50"
+  };
+  messageContainer.className = `${baseClasses} ${typeStyles[type] || typeStyles.info}`;
 }
 
 function isValidEmail(email) {

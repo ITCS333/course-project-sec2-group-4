@@ -43,22 +43,30 @@ const weekListSection = document.getElementById("week-list-section");
  */
 function createWeekArticle(week) {
   const article = document.createElement("article");
-  article.className = "card";
+  article.className = "bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between";
+
+  const contentDiv = document.createElement("div");
 
   const heading = document.createElement("h2");
+  heading.className = "text-xl font-bold text-slate-900 mb-2";
   heading.textContent = week.title || "";
 
   const startDatePara = document.createElement("p");
+  startDatePara.className = "text-xs font-semibold uppercase tracking-wider text-indigo-600 mb-3";
   startDatePara.textContent = "Starts on: " + (week.start_date || "");
 
   const descriptionPara = document.createElement("p");
+  descriptionPara.className = "text-slate-600 text-sm mb-6 line-clamp-3";
   descriptionPara.textContent = week.description || "";
+
+  contentDiv.append(heading, startDatePara, descriptionPara);
 
   const link = document.createElement("a");
   link.href = "details.html?id=" + week.id;
+  link.className = "inline-flex items-center justify-center px-4 py-2 bg-indigo-50 text-indigo-700 text-sm font-bold rounded-lg hover:bg-indigo-100 transition-colors mt-auto";
   link.textContent = "View Details & Discussion";
 
-  article.append(heading, startDatePara, descriptionPara, link);
+  article.append(contentDiv, link);
   return article;
 }
 
