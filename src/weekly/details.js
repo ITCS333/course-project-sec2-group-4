@@ -101,7 +101,7 @@ function renderWeekDetails(week) {
     const li = document.createElement("li");
     const link = document.createElement("a");
     link.href = url;
-    link.textContent = new URL(url).hostname;
+    link.textContent = url; // Revert to displaying the full URL
     link.target = "_blank";
     link.rel = "noopener noreferrer";
     link.className = "inline-flex items-center px-3 py-1.5 bg-slate-100 text-slate-700 text-xs font-medium rounded-full hover:bg-slate-200 transition-colors border border-slate-200";
