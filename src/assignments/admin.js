@@ -27,25 +27,30 @@ function getFilesFromTextarea() {
 
 function createAssignmentRow(assignment) {
   const row = document.createElement("tr");
+  row.className = "hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0";
 
   const titleCell = document.createElement("td");
+  titleCell.className = "px-4 py-4 text-sm text-slate-900 font-medium";
   titleCell.textContent = assignment.title || "";
 
   const dueDateCell = document.createElement("td");
+  dueDateCell.className = "px-4 py-4 text-sm text-slate-600 whitespace-nowrap";
   dueDateCell.textContent = assignment.due_date || "";
 
   const descriptionCell = document.createElement("td");
+  descriptionCell.className = "px-4 py-4 text-sm text-slate-600 max-w-md truncate";
   descriptionCell.textContent = assignment.description || "";
 
   const actionsCell = document.createElement("td");
+  actionsCell.className = "px-4 py-4 text-sm space-x-2 text-right whitespace-nowrap";
 
   const editButton = document.createElement("button");
-  editButton.className = "edit-btn";
+  editButton.className = "edit-btn bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg px-3 py-1.5 text-xs font-medium transition-colors";
   editButton.dataset.id = assignment.id;
   editButton.textContent = "Edit";
 
   const deleteButton = document.createElement("button");
-  deleteButton.className = "delete-btn";
+  deleteButton.className = "delete-btn bg-red-500 hover:bg-red-600 text-white rounded-lg px-3 py-1.5 text-xs font-medium transition-colors";
   deleteButton.dataset.id = assignment.id;
   deleteButton.textContent = "Delete";
 
@@ -239,6 +244,7 @@ async function loadAndInitialize() {
     const row = document.createElement("tr");
     const cell = document.createElement("td");
     cell.colSpan = 4;
+    cell.className = "px-4 py-12 text-center text-red-500 text-sm font-medium bg-white";
     cell.textContent = error.message || "Unable to load assignments.";
     row.appendChild(cell);
     assignmentsTbody.appendChild(row);
