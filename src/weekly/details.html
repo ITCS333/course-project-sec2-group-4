@@ -1,60 +1,59 @@
-<!--
-  Requirement: Create the Dedicated Page for a Single Week
-
-  Instructions:
-  This page displays the full details for one week and allows students
-  to read and post discussion comments.
--->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-50">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week Details</title>
-    <link rel="stylesheet" href="../common/styles.css">
-    <!-- Required: link details.js with defer. -->
+    <title>Weekly Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="details.js" defer></script>
 </head>
-<body class="weekly-page">
-    <header class="navbar">
-        <div class="container">
-            <h1 id="week-title"></h1>
+<body class="text-base leading-relaxed text-slate-600 antialiased">
+    <!-- Navbar -->
+    <nav class="bg-slate-800 text-white sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-8">
+                    <a href="../../index.html" class="text-xs uppercase tracking-widest text-slate-400 font-medium hover:text-white transition-colors">ITCS333 Hub</a>
+                    <a href="list.html" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Weekly Breakdown</a>
+                </div>
+                <div>
+                    <a href="../../index.html" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Back to Home</a>
+                </div>
+            </div>
         </div>
-    </header>
+    </nav>
 
-    <main class="container">
-        <!-- ============================================================
-             Section 1: Weekly Information
-             ============================================================ -->
-        <article class="card week-details">
-            <p id="week-start-date"></p>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <header class="mb-12">
+            <h1 id="week-title" class="text-4xl text-slate-900 font-medium mb-4"></h1>
+            <p id="week-start-date" class="text-xs uppercase tracking-widest text-slate-400 font-medium"></p>
+        </header>
 
-            <h2>Description & Notes</h2>
-            <p id="week-description"></p>
+        <article class="bg-white rounded-xl border border-slate-100 p-8 border-t-2 border-indigo-500 mb-12">
+            <h2 class="text-2xl text-slate-900 font-medium mb-4">Overview</h2>
+            <p id="week-description" class="text-slate-600 mb-8 whitespace-pre-wrap"></p>
 
-            <h2>Exercises & Resources</h2>
-            <ul id="week-links-list"></ul>
+            <h2 class="text-2xl text-slate-900 font-medium mb-4">Resource Links</h2>
+            <ul id="week-links-list" class="space-y-2 text-indigo-500 underline text-sm list-disc pl-5"></ul>
         </article>
 
+        <section id="discussion-forum" class="bg-white rounded-xl border border-slate-100 p-8 border-t-2 border-emerald-500">
+            <h2 class="text-2xl text-slate-900 font-medium mb-6">Weekly Discussion</h2>
 
-        <!-- ============================================================
-             Section 2: Discussion Forum
-             ============================================================ -->
-        <section class="card week-comments" id="discussion-forum">
-            <h2>Discussion</h2>
+            <div id="comment-list" aria-live="polite" class="space-y-6 mb-12">
+                <!-- Comments injected here -->
+            </div>
 
-            <!-- Subsection 2.1: Existing Comments -->
-            <div id="comment-list" aria-live="polite"></div>
+            <form id="comment-form" action="#" class="space-y-4">
+                <fieldset class="border border-slate-200 rounded-lg p-6">
+                    <legend class="text-sm uppercase tracking-widest text-slate-400 px-2 font-medium">Post a Comment</legend>
 
-            <!-- Subsection 2.2: Add a Comment Form -->
-            <form id="comment-form" action="#">
-                <fieldset>
-                    <legend>Leave a Comment</legend>
+                    <div class="mb-4 mt-2">
+                        <label for="new-comment" class="block text-sm font-medium text-slate-900 mb-1">Comment</label>
+                        <textarea id="new-comment" required placeholder="Share your thoughts on this week's content..." class="block w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 min-h-[120px]"></textarea>
+                    </div>
 
-                    <label for="new-comment">Your Comment</label>
-                    <textarea id="new-comment" rows="4" required></textarea>
-
-                    <button class="btn btn-primary" type="submit">Post Comment</button>
+                    <button class="bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors" type="submit">Post Comment</button>
                 </fieldset>
             </form>
         </section>
