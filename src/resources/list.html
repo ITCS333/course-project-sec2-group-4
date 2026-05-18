@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <html lang="en" class="h-full bg-slate-50">
 <head>
@@ -17,7 +17,26 @@
         <h1 class="max-w-7xl mx-auto text-2xl font-medium">Course Resources</h1>
     </header>
     <main>
+    <!-- Navbar -->
+    <nav class="bg-slate-800 text-white sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-8">
+                    <a href="../../index.html" class="text-xs uppercase tracking-widest text-slate-400 font-medium hover:text-white transition-colors">ITCS333 Hub</a>
+                    <span class="text-sm font-medium text-white">Resources</span>
+                </div>
+                <div>
+                    <a href="../../index.html" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <header class="mb-12">
+            <h1 class="text-4xl text-slate-900 font-medium mb-4">Course Resources</h1>
+            <p class="max-w-2xl">Access general tools, documentation, and external links relevant to the course.</p>
+        </header>
        
         <section id="resource-list-section">
         <section id="resource-list-section" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -34,7 +53,8 @@
                 <a href="details.html?id=">View Resource & Discussion</a>
                 <a href="details.html?id=" class="bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors inline-block w-max">View Resource & Discussion</a>
             </article>
+            <!-- Resource cards will be dynamically injected by list.js -->
+            <p class="col-span-full py-12 text-center text-slate-400 animate-pulse font-medium">Loading resources...</p>
         </section>
     </main>
 </body>
-</html>
