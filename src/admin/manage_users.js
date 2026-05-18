@@ -75,7 +75,7 @@ async function handleChangePassword(event) {
   passwordForm.reset();
 
   try {
-    const response = await fetch('../api/index.php?action=change_password', {
+    const response = await fetch('./api/index.php?action=change_password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -117,7 +117,7 @@ async function handleAddUser(event) {
   }
 
   try {
-    const response = await fetch('../api/index.php', {
+    const response = await fetch('./api/index.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password, is_admin }),
@@ -151,7 +151,7 @@ async function handleTableClick(event) {
     }
 
     try {
-      const response = await fetch(`../api/index.php?id=${encodeURIComponent(id)}`, {
+      const response = await fetch(`./api/index.php?id=${encodeURIComponent(id)}`, {
         method: 'DELETE',
       });
       const result = await response.json();
@@ -169,7 +169,51 @@ async function handleTableClick(event) {
     }
 
   } else if (button.classList.contains('edit-btn')) {
-    alert('Edit user feature is not implemented yet.');
+    const user = users.find(u => String(u.id) === String(id));
+    if (!user) return;
+
+    let newName = prompt('Enter new name:', user.name);
+    if (newName === null) return;
+    newName = newName.trim();
+    if (!newName) return alert('Name cannot be empty.');
+
+    let newEmail = prompt('Enter new email:', user.email);
+    if (newEmail === null) return;
+    newEmail = newEmail.trim();
+    if (!newEmail) return alert('Email cannot be empty.');
+
+    if (newName === user.name && newEmail === user.email) return; // No changes made
+
+    try {
+      const response = await fetch('./api/index.php', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: user.id,
+          name: newName,
+          email: newEmail,
+          is_admin: user.is_admin
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || result.success === false) {
+        alert(result.message || 'Unable to update user.');
+        return;
+      }
+
+      // Update local state directly for a faster UI response
+      user.name = newName;
+      user.email = newEmail;
+      renderTable(users);
+
+      alert('User updated successfully.');
+
+    } catch (error) {
+      console.error(error);
+      alert('Unable to update user.');
+    }
   }
 }
 
@@ -220,7 +264,7 @@ function handleSort(event) {
 
 async function loadUsersAndInitialize() {
   try {
-    const response = await fetch('../api/index.php');
+    const response = await fetch('./api/index.php');
     if (!response.ok) {
       console.error('Failed to fetch users', response.status);
       alert('Unable to load users. Please refresh the page.');
