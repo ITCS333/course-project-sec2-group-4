@@ -1,98 +1,91 @@
-<!--
-  Requirement: Create the Admin View for the Weekly Breakdown
-
-  Instructions:
-  Fill in the HTML elements as described in the comments.
-  This page allows the teacher (admin) to perform full CRUD operations
-  on the weekly course content.
--->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-50">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Weekly Breakdown</title>
-    <link rel="stylesheet" href="../common/styles.css">
-    <!-- Required: link admin.js with defer. -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="admin.js" defer></script>
 </head>
-<body class="weekly-page weekly-admin" class="weekly-page weekly-admin">
-    <header class="navbar">
-        <div class="container container-wide">
-            <h1>Manage Weekly Breakdown</h1>
-        </div>
-    </header>
-
-    <main class="container container-wide">
-
-        <!-- ============================================================
-             Section 1: Add / Edit Week Form
-             ============================================================ -->
-        <section class="card">
-            <h2 id="form-heading">Add a New Week</h2>
-
-            <form id="week-form" action="#">
-                <fieldset>
-                    <legend>Weekly Details</legend>
-
-                    <label for="week-title">Week Title</label>
-                    <input id="week-title" type="text" placeholder="Week 1: Introduction to HTML" required>
-
-                    <label for="week-start-date">Start Date</label>
-                    <input id="week-start-date" type="date" required>
-
-                    <label for="week-description">Description</label>
-                    <textarea id="week-description" rows="5" required></textarea>
-
-                    <label for="week-links">Resource Links (one URL per line)</label>
-                    <textarea id="week-links" rows="3" placeholder="Enter one URL per line"></textarea>
-
-                    <button id="add-week" class="btn btn-primary" type="submit">Add Week</button>
-                </fieldset>
-            </form>
-        </section>
-
-
-        <!-- ============================================================
-             Section 2: Existing Weekly Entries
-             ============================================================ -->
-        <section class="card">
-            <h2>Current Weekly Breakdown</h2>
-
-            <div class="table-wrapper">
-                <table id="weeks-table">
-                    <thead>
-                        <tr>
-                            <th>Week Title</th>
-                            <th>Start Date</th>
-                    
-                            <th>Description</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="weeks-tbody"></tbody>
-                </table>
+<body class="text-base leading-relaxed text-slate-600 antialiased">
+    <!-- Navbar -->
+    <nav class="bg-slate-800 text-white sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-8">
+                    <a href="../../index.html" class="text-xs uppercase tracking-widest text-slate-400 font-medium hover:text-white transition-colors">ITCS333 Hub</a>
+                    <span class="text-sm font-medium text-white">Manage Weekly Breakdown</span>
+                </div>
+                <div>
+                    <a href="../../index.html" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Back to Home</a>
+                </div>
             </div>
+        </div>
+    </nav>
 
-                <!-- admin.js will inject rows here. Each row follows
-                     this structure (do NOT hardcode real data):
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <header class="mb-12">
+            <h1 class="text-4xl text-slate-900 font-medium">Manage Weekly Breakdown</h1>
+        </header>
 
-                <tr>
-                    <td>Week 1: Introduction to HTML</td>
-                    <td>2025-01-13</td>
-                    <td>Learn HTML fundamentals...</td>
-                    <td>
-                        <button class="edit-btn"   data-id="1">Edit</button>
-                        <button class="delete-btn" data-id="1">Delete</button>
-                    </td>
-                </tr>
+        <div class="space-y-12">
+            <!-- Section 1: Add / Edit Week Form -->
+            <section>
+                <h2 id="form-heading" class="text-2xl text-slate-900 font-medium mb-6">Add a New Week</h2>
 
-                The data-id attribute holds the integer id from the
-                weeks table (primary key). -->
+                <form id="week-form" action="#" class="bg-white rounded-xl border border-slate-100 p-8 border-t-2 border-indigo-500">
+                    <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <legend class="sr-only">Weekly Details</legend>
 
-            <!-- End of <table> -->
-        <!-- End of list <section> -->
+                        <div class="space-y-2">
+                            <label for="week-title" class="text-xs uppercase tracking-widest text-slate-400 font-medium">Week Title</label>
+                            <input id="week-title" type="text" placeholder="Week 1: Introduction to HTML" required class="block w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100">
+                        </div>
 
-    <!-- End of <main> -->
+                        <div class="space-y-2">
+                            <label for="week-start-date" class="text-xs uppercase tracking-widest text-slate-400 font-medium">Start Date</label>
+                            <input id="week-start-date" type="date" required class="block w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100">
+                        </div>
+
+                        <div class="space-y-2 md:col-span-2">
+                            <label for="week-description" class="text-xs uppercase tracking-widest text-slate-400 font-medium">Description</label>
+                            <textarea id="week-description" rows="5" required class="block w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"></textarea>
+                        </div>
+
+                        <div class="space-y-2 md:col-span-2">
+                            <label for="week-links" class="text-xs uppercase tracking-widest text-slate-400 font-medium">Resource Links (one URL per line)</label>
+                            <textarea id="week-links" rows="3" placeholder="Enter one URL per line" class="block w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"></textarea>
+                        </div>
+
+                        <div class="md:col-span-2 pt-4">
+                            <button id="add-week" type="submit" class="bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg px-6 py-2.5 text-sm font-medium transition-colors">Add Week</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </section>
+
+            <!-- Section 2: Existing Weekly Entries -->
+            <section>
+                <h2 class="text-2xl text-slate-900 font-medium mb-6">Current Weekly Breakdown</h2>
+                <div class="bg-white rounded-xl border border-slate-100 border-t-2 border-slate-800 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table id="weeks-table" class="min-w-full divide-y divide-slate-200">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-widest">Week Title</th>
+                                    <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-widest">Start Date</th>
+                                    <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-slate-400 uppercase tracking-widest">Description</th>
+                                    <th scope="col" class="px-6 py-4 text-right text-xs font-medium text-slate-400 uppercase tracking-widest">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="weeks-tbody" class="bg-white divide-y divide-slate-200">
+                                <!-- Dynamic rows injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
 </body>
 </html>

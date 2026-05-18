@@ -91,6 +91,6 @@ try {
         'message' => 'An error occurred during login. Please try again later.'
     ]);
     exit();
+    }
 }
-
-
+?>

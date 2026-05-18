@@ -71,8 +71,8 @@
                 const result = await response.json();
 
                 if (!result.success) {
-                    // window.location.href = 'src/auth/login.html';
-                    // return;
+                    window.location.href = 'src/auth/login.html';
+                    return;
                 }
 
                 renderHomepage(result.user || { name: 'Development User', is_admin: 1 });
