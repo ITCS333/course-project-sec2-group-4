@@ -14,16 +14,22 @@ const replyForm =
   document.getElementById("reply-form");
 
 const topicActions =
-  document.getElementById("topic-actions");
+  document.getElementById("topic-actions") ||
+  document.getElementById("op-actions");
 
-const params =
-  new URLSearchParams(window.location.search);
+function getTopicIdFromURL() {
 
-const topicId = params.get("id");
+  const params =
+    new URLSearchParams(window.location.search);
+
+  return params.get("id");
+}
+
+const topicId = getTopicIdFromURL();
 
 let currentTopic = null;
 
-let replies = [];
+let currentReplies = [];
 
 function createReplyArticle(reply) {
 
@@ -65,9 +71,11 @@ function createReplyArticle(reply) {
 
 function renderReplies() {
 
+  if (!replyListContainer) return;
+
   replyListContainer.innerHTML = "";
 
-  for (let reply of replies) {
+  for (let reply of currentReplies) {
 
     const article =
       createReplyArticle(reply);
@@ -76,31 +84,50 @@ function renderReplies() {
   }
 }
 
+function renderOriginalPost(topic) {
+
+  if (!topic) return;
+
+  currentTopic = topic;
+
+  if (topicSubject) {
+
+    topicSubject.textContent =
+      topic.subject;
+  }
+
+  if (opMessage) {
+
+    opMessage.textContent =
+      topic.message;
+  }
+
+  if (opFooter) {
+
+    opFooter.textContent =
+      `Posted by: ${topic.author} on ${topic.created_at}`;
+  }
+
+  if (topicActions) {
+
+    topicActions.innerHTML = "";
+
+    const deleteBtn =
+      document.createElement("button");
+
+    deleteBtn.className = "delete-btn";
+
+    deleteBtn.dataset.id = topic.id;
+
+    deleteBtn.textContent = "Delete Topic";
+
+    topicActions.appendChild(deleteBtn);
+  }
+}
+
 function renderTopic() {
 
-  if (!currentTopic) return;
-
-  topicSubject.textContent =
-    currentTopic.subject;
-
-  opMessage.textContent =
-    currentTopic.message;
-
-  opFooter.textContent =
-    `Posted by: ${currentTopic.author} on ${currentTopic.created_at}`;
-
-  topicActions.innerHTML = "";
-
-  const deleteBtn =
-    document.createElement("button");
-
-  deleteBtn.className = "delete-btn";
-
-  deleteBtn.dataset.id = currentTopic.id;
-
-  deleteBtn.textContent = "Delete Topic";
-
-  topicActions.appendChild(deleteBtn);
+  renderOriginalPost(currentTopic);
 }
 
 async function loadTopic() {
@@ -131,18 +158,26 @@ async function loadReplies() {
 
   if (result.success) {
 
-    replies = result.data;
+    currentReplies = result.data;
 
     renderReplies();
   }
 }
 
-async function handleReplySubmit(event) {
+async function handleAddReply(event) {
 
-  event.preventDefault();
+  if (event && event.preventDefault) {
+
+    event.preventDefault();
+  }
+
+  const newReply =
+    document.getElementById("new-reply");
 
   const replyText =
-    document.getElementById("new-reply").value;
+    newReply ? newReply.value.trim() : "";
+
+  if (replyText === "") return;
 
   const response =
     await fetch("./api/index.php?action=reply", {
@@ -162,15 +197,28 @@ async function handleReplySubmit(event) {
 
   if (result.success) {
 
-    replies.push(result.data);
+    currentReplies.push(result.data);
 
     renderReplies();
 
-    replyForm.reset();
+    if (replyForm) {
+
+      replyForm.reset();
+    } else if (newReply) {
+
+      newReply.value = "";
+    }
   }
 }
 
-async function handleReplyDelete(event) {
+async function handleReplySubmit(event) {
+
+  return handleAddReply(event);
+}
+
+async function handleReplyListClick(event) {
+
+  if (!event || !event.target || !event.target.classList) return;
 
   if (
     event.target.classList.contains(
@@ -194,8 +242,8 @@ async function handleReplyDelete(event) {
 
     if (result.success) {
 
-      replies =
-        replies.filter(
+      currentReplies =
+        currentReplies.filter(
           reply => reply.id != id
         );
 
@@ -228,16 +276,24 @@ async function handleReplyDelete(event) {
   }
 }
 
+async function handleReplyDelete(event) {
+
+  return handleReplyListClick(event);
+}
+
 async function initializePage() {
 
   await loadTopic();
 
   await loadReplies();
 
-  replyForm.addEventListener(
-    "submit",
-    handleReplySubmit
-  );
+  if (replyForm) {
+
+    replyForm.addEventListener(
+      "submit",
+      handleReplySubmit
+    );
+  }
 
   document.addEventListener(
     "click",
@@ -245,4 +301,7 @@ async function initializePage() {
   );
 }
 
-initializePage();
+if (document.currentScript) {
+
+  initializePage();
+}
