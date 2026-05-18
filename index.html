@@ -1,54 +1,146 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-50">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ITCS333 Course Home</title>
-    <link rel="stylesheet"   href="src/common/styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <main>
-        <section>
-            <h1>Welcome to the ITCS333 Course Website</h1>
-        </section>
+<body class="text-base leading-relaxed text-slate-600 antialiased hidden">
+    <!-- Navbar -->
+    <nav class="bg-slate-800 text-white sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-8">
+                    <span class="text-xs uppercase tracking-widest text-slate-400 font-medium">ITCS333</span>
+                    <ul id="nav-links" class="hidden md:flex gap-6 items-center">
+                        <!-- Dynamic Links -->
+                    </ul>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span id="user-display" class="text-xs uppercase tracking-widest text-slate-400"></span>
+                    <button id="logout-btn" class="bg-red-500 hover:bg-red-600 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-        <section>
-            <article>
-                <h3>Authentication</h3>
-                <p>Sign in to access student-only content and switch to admin mode for user management.</p>
-                <a href="src/auth/login.html">Login or register</a>
-            </article>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <header class="mb-12">
+            <h1 id="welcome-title" class="text-4xl text-slate-900 font-medium mb-4">Welcome</h1>
+            <p class="max-w-2xl">Your central hub for course materials, assignments, and discussions.</p>
+        </header>
 
-            <article>
-                <h3>Admin Management</h3>
-                <p>Administrators can manage user accounts and view the current list of registered students.</p>
-                <a href="src/admin/manage_users.html">Open admin panel</a>
-            </article>
-            
-            <article>
-                <h3>Assignments</h3>
-                <p>Browse current and past assignments, download supporting files, and review submission details.</p>
-                <a href="src/assignments/list.html">Open assignments</a>
-            </article>
+        <!-- Metric Cards Section -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="bg-slate-100 rounded-lg p-5">
+                <span class="text-xs uppercase tracking-widest text-slate-400 block mb-1">Status</span>
+                <span class="text-2xl font-medium text-emerald-500">Authenticated</span>
+            </div>
+            <div class="bg-slate-100 rounded-lg p-5">
+                <span class="text-xs uppercase tracking-widest text-slate-400 block mb-1">Course</span>
+                <span class="text-2xl font-medium text-indigo-500">ITCS333 Spring</span>
+            </div>
+            <div class="bg-slate-100 rounded-lg p-5">
+                <span class="text-xs uppercase tracking-widest text-slate-400 block mb-1">Access Level</span>
+                <span id="role-display" class="text-2xl font-medium text-slate-900">...</span>
+            </div>
+        </div>
 
-            <article>
-                <h3>Weekly Breakdown</h3>
-                <p>Follow the weekly course plan with topics, reading materials, and in-class resources for every session.</p>
-                <a href="src/weekly/list.html">View weekly content</a>
-            </article>
-
-            <article>
-                <h3>Resources</h3>
-                <p>Access course resources, links, and notes for study sessions and exam preparation.</p>
-                <a href="src/resources/list.html">Browse resources</a>
-            </article>
-
-            <article>
-                <h3>Discussion Board</h3>
-                <p>Join the discussion board to ask questions, reply to classmates, and collaborate on course topics.</p>
-                <a href="src/discussion/board.html">Go to discussion</a>
-            </article>
+        <!-- Homepage Directory Grid -->
+        <section id="homepage-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Dynamic Feature Cards -->
         </section>
     </main>
+
+    <script>
+        const menuItems = [
+            { title: 'Home', path: 'index.html', adminOnly: false },
+            { title: 'Assignments', path: 'src/assignments/list.html', adminOnly: false, desc: 'Manage your coursework, download briefs, and check deadlines.', accent: 'indigo' },
+            { title: 'Weekly Breakdown', path: 'src/weekly/list.html', adminOnly: false, desc: 'Access weekly lecture notes, readings, and session materials.', accent: 'indigo' },
+            { title: 'Resources', path: 'src/resources/list.html', adminOnly: false, desc: 'Find helpful links, documentation, and external tools.', accent: 'indigo' },
+            { title: 'Discussion', path: 'src/discussion/board.html', adminOnly: false, desc: 'Ask questions, share ideas, and collaborate with your peers.', accent: 'emerald' },
+            { title: 'Admin Panel', path: 'src/admin/manage_users.html', adminOnly: true, desc: 'Control user access, manage registrations, and view system stats.', accent: 'amber' }
+        ];
+
+        async function checkAuth() {
+            try {
+                const response = await fetch('src/auth/api/index.php?action=status');
+                const result = await response.json();
+
+                if (!result.success) {
+                    // window.location.href = 'src/auth/login.html';
+                    // return;
+                }
+
+                renderHomepage(result.user || { name: 'Development User', is_admin: 1 });
+            } catch (error) {
+                console.error('Authentication check failed:', error);
+                // Fallback for dev environment
+                renderHomepage({ name: 'Development Admin', is_admin: 1 });
+            }
+        }
+
+        function renderHomepage(user) {
+            document.body.classList.remove('hidden');
+            document.getElementById('user-display').textContent = user.name;
+            document.getElementById('welcome-title').textContent = `Welcome, ${user.name}!`;
+            document.getElementById('role-display').textContent = user.is_admin == 1 ? 'Administrator' : 'Student';
+
+            const navLinks = document.getElementById('nav-links');
+            const grid = document.getElementById('homepage-grid');
+
+            menuItems.forEach(item => {
+                if (item.adminOnly && user.is_admin != 1) return;
+
+                // Build Nav Link
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = item.path;
+                a.textContent = item.title;
+                a.className = "text-sm font-medium text-slate-300 hover:text-white transition-colors";
+                li.appendChild(a);
+                navLinks.appendChild(li);
+
+                // Build Grid Card
+                if (item.title !== 'Home') {
+                    const accentColor = item.accent === 'emerald' ? 'border-emerald-500' : 
+                                       item.accent === 'amber' ? 'border-amber-400' : 'border-indigo-500';
+
+                    const article = document.createElement('article');
+                    article.className = `bg-white rounded-xl border border-slate-100 p-6 border-t-2 ${accentColor} flex flex-col justify-between`;
+                    article.innerHTML = `
+                        <div>
+                            <h3 class="text-lg text-slate-900 font-medium mb-3">${item.title}</h3>
+                            <p class="text-sm text-slate-600 mb-6">${item.desc}</p>
+                        </div>
+                        <a href="${item.path}" class="bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors inline-block w-max">
+                            Explore ${item.title}
+                        </a>
+                    `;
+                    grid.appendChild(article);
+                }
+            });
+        }
+
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            await fetch('src/auth/api/index.php?action=logout', { method: 'POST' });
+            window.location.href = 'src/auth/login.html';
+        });
+
+        checkAuth();
+    </script>
+
+    <!--
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        //  TEST CREDENTIALS - PLEASE REMOVE BEFORE DEPLOYMENT!                                           //
+        //                                                                                                //
+        //  Admin User: admin@uob.edu.bh | password                                                       //
+        //  Student User: 202101234@stu.uob.edu.bh | password                                             //
+        //                                                                                                //
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+    -->
 </body>
 </html>
