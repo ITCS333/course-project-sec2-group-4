@@ -13,7 +13,8 @@ The website covers five functional areas, each assigned to one team member.
 
 ## Live Demo
 
-> **Replit Deployment:** Update this link with your Replit deployment URL once the project is live.
+> **Replit Deployment:** [The Website](https://course-project-sec-2-group-4--a5zam.replit.app).
+**a5zam01 note:** Use the default credentials to login.
 
 ---
 
